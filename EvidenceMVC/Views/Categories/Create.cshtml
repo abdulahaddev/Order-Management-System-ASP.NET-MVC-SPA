@@ -1,0 +1,33 @@
+﻿@model EvidenceMVC.Models.Category
+@{
+    ViewBag.Title = "Create";
+}
+
+<div class="row">
+    <div class="col">
+        @using (Ajax.BeginForm("Create", "Categories", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "msg-CreateCategory" }, new { id = "CategoryAddForm", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken();
+            <h2>Add New Category</h2>
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group row row mb-2">
+                @Html.LabelFor(x => x.CategoryName, htmlAttributes: new { @class = "col-form-label col-2" })
+                <div class="col-6">
+                    @Html.EditorFor(x => x.CategoryName, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="col-4">
+                    @Html.ValidationMessageFor(x => x.CategoryName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-10 offset-2">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+                    <div id="msg-CreateCategory"></div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

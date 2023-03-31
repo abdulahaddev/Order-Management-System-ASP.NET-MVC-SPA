@@ -1,0 +1,50 @@
+
+USE master
+GO
+
+CREATE DATABASE SellMangementDB
+GO
+
+USE SellMangementDB
+GO
+
+CREATE TABLE Customer
+(
+	CustomerId INT IDENTITY PRIMARY KEY,
+	CustomerName NVARCHAR(100) NOT NULL,
+	CustomerAddress NVARCHAR(200) NULL
+)
+GO
+CREATE TABLE Category
+(
+	CategoryId INT IDENTITY PRIMARY KEY,
+	CategoryName NVARCHAR(50) NOT NULL
+)
+GO
+CREATE TABLE Product
+(
+	ProductId INT IDENTITY PRIMARY KEY,
+	ProductName NVARCHAR(200) NOT NULL,
+	CategoryId INT REFERENCES Category(CategoryId) NOT NULL,
+	Price MONEY NOT NULL,
+	SKUCode INT NOT NULL,
+	EntryDate DATE NOT NULL,
+	PicturePath NVARCHAR(200) NULL,
+	InStock BIT NOT NULL
+)
+GO
+CREATE TABLE [Order]
+(
+	OrderId INT IDENTITY PRIMARY KEY,
+	CustomerId INT REFERENCES Customer(CustomerId ) NOT NULL
+)
+GO
+CREATE TABLE OrderDetails
+(
+	OrderDetailsId INT IDENTITY PRIMARY KEY,
+	OrderId INT REFERENCES [Order](OrderId) NOT NULL,
+	ProductId INT REFERENCES Product(ProductId) NOT NULL,
+	Quantity INT NOT NULL,
+	Price MONEY NOT NULL
+)
+GO

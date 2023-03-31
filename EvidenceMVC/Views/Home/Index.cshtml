@@ -1,0 +1,301 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="row no-gutters d-flex justify-content-between border p-2 mb-3" style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px">
+    <div class="col-md-6" id="CustomerViewSection" style="overflow-y: auto; height:210px">
+        @{
+            Html.RenderAction("Index", "Customers");
+        }
+    </div>
+    <div class="col-md-5" id="CategoryViewSection" style="overflow-y: auto; height:210px">
+        @{
+            Html.RenderAction("Index", "Categories");
+        }
+    </div>
+</div>
+
+<div id="ProductViewSection" class="border p-2 mb-3" style="height: 216px; overflow: hidden; overflow-y: scroll; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px">
+    @{
+        Html.RenderAction("Index", "Products");
+    }
+</div>
+<div id="OrderViewSection" class="border p-2 mb-4" style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px">
+    @{
+        Html.RenderAction("Index", "Orders");
+    }
+</div>
+
+<div class="modal" id="CustomModal">
+    <div class="modal-dialog modal-lg" style="width:900px !important;">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h4 class="text-muted" id="ModalHeading"></h4>
+                <button id="BtnModalClose" class="btn btn-warning" type="button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="ModalDataSection">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            $.validator.unobtrusive.parse("#ProductAddForm");
+            $.validator.unobtrusive.parse("#ProductEditForm");
+        });
+
+        //All Ajax call
+        function loadData(hrefData, state) {
+            $.ajax(
+                {
+                    type: 'GET',
+                    url: hrefData
+                }
+            ).done((data) => {
+                switch (state) {
+                    case "add":
+                        $("#ModalDataSection").html(data);
+                        $("#CustomModal").modal("show");
+                        break;
+                    case "addSingleProduct":
+                        $("#ModalDataSection").html(data);
+                        $("#CustomModal").modal("show");
+                        break;
+                    case "edit":
+                        $("#ModalDataSection").html(data);
+                        $("#CustomModal").modal("show");
+                        break;
+                    case "delete":
+                        RefreshPage();
+                        break;
+
+                    case "CategoryRefresh":
+                        $("#CategoryViewSection").html(data);
+                        break;
+                    case "CustomerRefresh":
+                        $("#CustomerViewSection").html(data);
+                        break;
+                    case "ProductRefresh":
+                        $("#ProductViewSection").html(data);
+                        break;
+                    case "OrderRefresh":
+                        $("#OrderViewSection").html(data);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            ).fail(() => {
+                var msg = "Data loading failed !!";
+                alert(msg);
+            });
+        }
+
+
+        // Onclick event for Add and show modal
+        $(document).on('click', 'a#BtnAddNewCategory', function (e) {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+
+            var hrefData = $(this).attr("href");    //Get the add url from href attribute
+            loadData(hrefData, "add");              //Load Ajax data
+        });
+
+        // Onclick event for Add and show modal
+        $(document).on('click', 'a#BtnAddNewCustomer', function (e) {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+
+            var hrefData = $(this).attr("href");    //Get the add url from href attribute
+            loadData(hrefData, "add");              //Load Ajax data
+        });
+
+        // Onclick event for Add and show modal
+        $(document).on('click', 'a#BtnAddNewProduct', function (e) {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+
+            var hrefData = $(this).attr("href");    //Get the add url from href attribute
+            loadData(hrefData, "add");              //Load Ajax data
+        });
+
+        // Onclick event for Add and show modal
+        $(document).on('click', 'a#BtnAddNewOrder', function (e) {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+
+            var hrefData = $(this).attr("href");    //Get the add url from href attribute
+            loadData(hrefData, "addSingleProduct");              //Load Ajax data
+        });
+
+        // Onclick event for edit and show modal
+        $(document).on('click', 'a.BtnEditProduct', function (e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            var hrefData = $(this).attr("href");    //Get the edit url from href attribute
+            loadData(hrefData, "edit");             //Load Ajax data
+        });
+        // Onclick event for edit and show modal
+        $(document).on('click', 'a.BtnEditCategory', function (e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            var hrefData = $(this).attr("href");    //Get the edit url from href attribute
+            loadData(hrefData, "edit");             //Load Ajax data
+        });
+
+        // Onclick event for edit and show modal
+        $(document).on('click', 'a.BtnDeleteProduct', function (e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            if (!window.confirm("Are you sure you want to delete this item?")) {
+                return;
+            }
+
+            var hrefData = $(this).attr("href");    //Get the edit url from href attribute
+            loadData(hrefData, "delete");           //Load Ajax data
+        });
+
+        $(document).on('click', '#BtnModalClose', function (e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            $("#CustomModal").modal("hide");
+
+        });
+
+
+        $(document).on('click', '#AddSingleProduct', function (e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            var lastItem = $("#SingleProductSection").find(".singleProductDropdown").last().val();
+            if (lastItem == "") {
+                return;
+            }
+
+            $.ajax({
+                type: "GET",
+                url: "/Orders/SingleProductEntry",
+                success: r => {
+                    $("#SingleProductSection").append(r);
+                }
+            });
+
+        });
+
+
+        $(document).on('click', '#AddSingleEditProduct', function (e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            var lastItem = $("#SingleProductEditItemContainer").find(".singleProductEditDropdown").last().val();
+            if (lastItem == "") {
+                return;
+            }
+
+            $.ajax({
+                type: "GET",
+                url: "/Orders/SingleProductEditEntry",
+                success: r => {
+                    $("#SingleProductEditItemContainer").append(r);
+                }
+            });
+
+        });
+
+        $(document).on('hide.bs.modal', "#CustomModal", function () {
+            RefreshPage();
+        });
+
+        $(document).on("change", ".singleProductDropdown", function () {
+
+            var priceBox = $(this).parent().parent().find(".product-price");
+
+            $.ajax({
+                type: "POST",
+                url: '/Orders/GetFee/' + $(this).val(),
+                dataType: "json",
+                success: data => {
+                    priceBox.val(data);
+                }
+            });
+        });
+
+        $(document).on("change", ".singleProductEditDropdown", function () {
+
+            var priceBox = $(this).parent().parent().find(".singleProductEditPrice");
+
+            $.ajax({
+                type: "POST",
+                url: '/Orders/GetFee/' + $(this).val(),
+                dataType: "json",
+                success: data => {
+                    priceBox.html(parseFloat(data).toFixed(4));
+                    console.log(data);
+                },
+                error: priceBox.html("0.0000")
+            });
+        });
+
+        $(document).on("click", ".single-product-delete", function (e) {
+
+            e.preventDefault();
+            $(this).parent().remove();
+
+        });
+
+        $(document).on("click", ".single-product-edit-delete", function (e) {
+
+            e.preventDefault();
+            $(this).parent().parent().remove();
+
+        });
+
+
+        //Close modal when new data/Edit data is done
+        function done() {
+            setTimeout(function () {
+                $("#CustomModal").modal("hide");
+                $("#ModalDataSection").html("");
+            }, 1000);
+        }
+
+        function RefreshPage() {
+            var hrefData = "@Url.Action("Index", "Categories")";
+            loadData(hrefData, "CategoryRefresh");
+
+            var hrefData = "@Url.Action("Index", "Customers")";
+            loadData(hrefData, "CustomerRefresh");
+
+            var hrefData = "@Url.Action("Index", "Products")";
+            loadData(hrefData, "ProductRefresh");
+
+            var hrefData = "@Url.Action("Index", "Orders")";
+            loadData(hrefData, "OrderRefresh");
+        }
+
+        function modalClose(e) {
+            e.preventDefault();
+            $("#CustomModal").modal("hide");
+            $("#ModalDataSection").html("");
+        }
+    </script>
+}
+
+

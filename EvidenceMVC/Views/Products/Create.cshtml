@@ -1,0 +1,97 @@
+﻿@model EvidenceMVC.ViewModels.ProductVM
+@{
+    ViewBag.Title = "Create";
+}
+
+<div class="row">
+    <div class="col">
+        @using (Ajax.BeginForm("Create", "Products", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "msg-CreateProduct"}, new { id = "ProductAddForm", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken();
+            <h2>Add New Product</h2>
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group row row mb-2">
+                @Html.LabelFor(x => x.ProductName, htmlAttributes: new { @class = "col-form-label col-2" })
+                <div class="col-6">
+                    @Html.EditorFor(x => x.ProductName, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="col-4">
+                    @Html.ValidationMessageFor(x => x.ProductName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group row row mb-2">
+                @Html.LabelFor(x => x.CategoryId, htmlAttributes: new { @class = "col-form-label col-2" })
+                <div class="col-6">
+                    @Html.DropDownListFor(x => x.CategoryId, ViewBag.categories as SelectList, "-----Select-----", new { @class = "form-control" })
+                </div>
+                <div class="col-4">
+                    @Html.ValidationMessageFor(x => x.CategoryId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="form-group row row mb-2">
+                @Html.LabelFor(x => x.Price, htmlAttributes: new { @class = "col-form-label col-2" })
+                <div class="col-6">
+                    @Html.EditorFor(x => x.Price, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="col-4">
+                    @Html.ValidationMessageFor(x => x.Price, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group row mb-2">
+                @Html.LabelFor(x => x.SKUCode, htmlAttributes: new { @class = "col-form-label col-2" })
+                <div class="col-6">
+                    @Html.EditorFor(x => x.SKUCode, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="col-4">
+                    @Html.ValidationMessageFor(x => x.SKUCode, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="form-group row row mb-2">
+                @Html.LabelFor(x => x.EntryDate, htmlAttributes: new { @class = "col-form-label col-2" })
+                <div class="col-6">
+                    @Html.EditorFor(x => x.EntryDate, new { htmlAttributes = new { @class = "form-control", Type = "date" } })
+                </div>
+                <div class="col-4">
+                    @Html.ValidationMessageFor(x => x.EntryDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group row row mb-2">
+                @Html.LabelFor(x => x.Picture, htmlAttributes: new { @class = "col-form-label col-2" })
+                <div class="col-6">
+                    @Html.TextBoxFor(x => x.Picture, new { @class = "form-control", Type = "file" })
+                </div>
+                <div class="col-4">
+                    @Html.ValidationMessageFor(x => x.Picture, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="form-group row row mb-2">
+                @Html.LabelFor(x => x.InStock, htmlAttributes: new { @class = "col-form-label col-2" })
+                <div class="col-6">
+                    @Html.CheckBoxFor(x => x.InStock, new { @class = "form-check-input" })
+                </div>
+                <div class="col-4">
+                    @Html.ValidationMessageFor(x => x.InStock, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <div class="col-10 offset-2">
+                    <button type="submit" class="btn btn-primary" id="btnCreate"><i class="fa fa-save"></i> Save</button>
+                    <div id="msg-CreateProduct"></div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

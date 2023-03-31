@@ -1,0 +1,19 @@
+﻿
+<div class="form-group row row mb-1 single-product-data">
+    @Html.Label("Product", htmlAttributes: new { @class = "col-form-label col-1" })
+    <div class="col-4">
+        @Html.DropDownList("SingleProductId", ViewBag.products as SelectList, "-----Select-----", new { @class = "form-control singleProductDropdown" })
+    </div>
+
+    @Html.Label("Quantity", htmlAttributes: new { @class = "col-form-label col-1" })
+    <div class="col-2">
+        @Html.TextBox("SingleProductQuantity", "", new { @class = "form-control", @Value = "1", Type = "number" } )
+    </div>
+
+    @Html.Label("Price", htmlAttributes: new { @class = "col-form-label col-1" })
+    <div class="col-2">
+        @Html.TextBox("SingleProductPrice", "", new { @class = "form-control product-price", @readonly = true })
+    </div>
+    <button type="button" class="btn btn-outline-danger btn-sm single-product-delete"><i class="fa fa-trash"></i></button>
+
+</div>
